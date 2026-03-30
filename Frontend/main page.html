@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>EventRadar | Perfect Circular Radar</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #f9fafc 0%, #f0f2f5 100%);
+      min-height: 100vh;
+      color: #1e1f2a;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ----- HEADER with logo on left + login/signup on right ----- */
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* Logo area - EventRadar with radar animation replacing the first 'a' */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      background: transparent;
+    }
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+    
+    .logo-text {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(125deg, #1E2F5A, #2C4C7C);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Radar container - NO LETTER 'a', just the radar animation */
+    .radar-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin: 0 0px;
+    }
+    
+    /* PERFECT CIRCULAR RADAR */
+    .circular-radar {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Outer pulsing ring - PERFECT CIRCLE */
+    .circular-radar::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, 
+        rgba(44, 160, 210, 0.65) 0%, 
+        rgba(44, 160, 210, 0.5) 25%, 
+        rgba(44, 160, 210, 0.3) 50%, 
+        rgba(44, 160, 210, 0.1) 75%,
+        rgba(44, 160, 210, 0) 100%);
+      opacity: 0.95;
+      animation: circularPing 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(44, 160, 210, 0.7);
+    }
+    
+    /* Sweeping radar arm - PERFECT CIRCLE with spinning gradient */
+    .circular-radar::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      transform: translate(-50%, -50%);
+      background: conic-gradient(
+        from 0deg, 
+        rgba(44, 180, 230, 0) 0deg, 
+        rgba(44, 180, 230, 0.5) 15deg, 
+        rgba(44, 200, 255, 0.9) 25deg, 
+        rgba(44, 180, 230, 0.5) 35deg, 
+        rgba(44, 180, 230, 0) 60deg
+      );
+      border-radius: 50%;
+      animation: radarSpin 1.3s linear infinite;
+      pointer-events: none;
+      filter: blur(0.5px);
+    }
+    
+    /* Inner glow ring - PERFECT CIRCLE */
+    .circular-radar .radar-inner-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70px;
+      height: 70px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(44, 180, 230, 0.3) 0%, rgba(44, 180, 230, 0.1) 40%, rgba(44, 180, 230, 0) 80%);
+      animation: innerPulse 1.4s ease-out infinite;
+      pointer-events: none;
+    }
+    
+    /* Secondary ring - PERFECT CIRCLE */
+    .circular-radar .radar-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 85px;
+      height: 85px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2.5px solid rgba(44, 180, 230, 0.7);
+      animation: ringPulse 1.6s ease-out infinite;
+      pointer-events: none;
+      box-shadow: 0 0 12px rgba(44, 180, 230, 0.5);
+    }
+    
+    /* Additional outer ring for more radar effect - PERFECT CIRCLE */
+    .circular-radar .radar-outer-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 110px;
+      height: 110px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1.5px solid rgba(44, 180, 230, 0.4);
+      animation: outerRingPulse 2s ease-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes radarSpin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    @keyframes circularPing {
+      0% { 
+        opacity: 0.95; 
+        transform: translate(-50%, -50%) scale(0.6);
+      }
+      50% { 
+        opacity: 0.7; 
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+    }
+    
+    @keyframes innerPulse {
+      0% { 
+        opacity: 0.6; 
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+      70% { 
+        opacity: 0.3; 
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+    }
+    
+    @keyframes ringPulse {
+      0% { 
+        opacity: 0.8; 
+        transform: translate(-50%, -50%) scale(0.75);
+        border-width: 2.5px;
+      }
+      50% { 
+        opacity: 0.6; 
+        transform: translate(-50%, -50%) scale(1.05);
+        border-width: 2px;
+      }
+      100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1.35);
+        border-width: 1.5px;
+      }
+    }
+    
+    @keyframes outerRingPulse {
+      0% { 
+        opacity: 0.5; 
+        transform: translate(-50%, -50%) scale(0.8);
+        border-width: 1.5px;
+      }
+      50% { 
+        opacity: 0.3; 
+        transform: translate(-50%, -50%) scale(1.1);
+        border-width: 1px;
+      }
+      100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1.4);
+        border-width: 1px;
+      }
+    }
+    
+    .auth-buttons {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #2c3e66;
+      padding: 8px 22px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 40px;
+      color: #2c3e66;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .btn-outline:hover {
+      background: #2c3e66;
+      color: white;
+      transform: scale(0.97);
+      box-shadow: 0 6px 12px rgba(44, 62, 102, 0.15);
+    }
+    
+    .btn-solid {
+      background: #2c3e66;
+      border: none;
+      padding: 8px 24px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-solid:hover {
+      background: #1f2c4b;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modal backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s;
+    }
+    
+    .modal-backdrop.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .modal-card {
+      background: white;
+      max-width: 420px;
+      width: 90%;
+      padding: 28px 24px;
+      border-radius: 32px;
+      box-shadow: 0 30px 40px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-card h3 {
+      font-size: 1.7rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    
+    .modal-card input, .modal-card select {
+      width: 100%;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    .modal-card input:focus, .modal-card select:focus {
+      outline: none;
+      border-color: #2c3e66;
+    }
+    
+    .modal-card button {
+      margin-top: 16px;
+      width: 100%;
+      background: #2c3e66;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .modal-card button:hover {
+      background: #1f2c4b;
+    }
+    
+    .close-modal {
+      margin-top: 12px;
+      background: transparent;
+      color: #888;
+      box-shadow: none;
+    }
+    
+    .close-modal:hover {
+      background: transparent;
+      color: #e76f51;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    
+    .form-row input, .form-row select {
+      flex: 1;
+      margin: 0;
+    }
+    
+    .location-icon {
+      position: relative;
+    }
+    
+    .modal-card::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .modal-card::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    .modal-card::-webkit-scrollbar-thumb {
+      background: #c1c9d2;
+      border-radius: 10px;
+    }
+
+    /* Hero section - search bar in the middle */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin: 48px 0 56px 0;
+    }
+    
+    .hero-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1E2A47, #3A4E7A);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+    
+    .search-wrapper {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .search-bar {
+      width: 100%;
+      padding: 18px 28px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 80px;
+      background: white;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s;
+      font-family: inherit;
+      outline: none;
+    }
+    
+    .search-bar:focus {
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(44, 62, 102, 0.2);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.3rem;
+      color: #8a99b4;
+      pointer-events: none;
+    }
+    
+    .search-feedback {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #4a5b7a;
+      background: #eef2fa;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 40px;
+    }
+
+    /* Categories grid */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin: 20px 0 70px 0;
+    }
+    
+    .category-card {
+      border-radius: 32px;
+      padding: 28px 20px 32px 20px;
+      transition: transform 0.25s ease, box-shadow 0.25s;
+      cursor: pointer;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    
+    .category-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-theater { background: #FFE9E3; border-bottom: 6px solid #E76F51; }
+    .card-cinema { background: #E3F0FF; border-bottom: 6px solid #3A86FF; }
+    .card-sports { background: #E1F7E6; border-bottom: 6px solid #38B000; }
+    .card-concerts { background: #F8E4FF; border-bottom: 6px solid #9C27B0; }
+    
+    .category-icon { font-size: 2.8rem; margin-bottom: 18px; }
+    .category-card h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.3px; }
+    .category-card p { font-size: 0.95rem; line-height: 1.4; opacity: 0.8; margin-top: 10px; }
+    .demo-badge { display: inline-block; margin-top: 18px; font-size: 0.75rem; background: rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 30px; font-weight: 500; }
+
+    .footer-note {
+      text-align: center;
+      margin: 30px 0 40px;
+      font-size: 0.8rem;
+      color: #6c7a91;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      padding-top: 28px;
+    }
+    
+    @media (max-width: 700px) {
+      .container { padding: 0 20px; }
+      .hero-title { font-size: 1.9rem; }
+      .category-card h2 { font-size: 1.5rem; }
+      .main-header { flex-direction: column; align-items: center; }
+      .logo-area { align-self: flex-start; }
+      .auth-buttons { align-self: flex-end; margin-top: -10px; }
+      .logo-text { font-size: 1.6rem; }
+      .form-row { flex-direction: column; gap: 8px; }
+      /* Scale radar rings for mobile */
+      .circular-radar::before { width: 65px; height: 65px; }
+      .circular-radar::after { width: 75px; height: 75px; }
+      .circular-radar .radar-inner-glow { width: 50px; height: 50px; }
+      .circular-radar .radar-ring { width: 60px; height: 60px; }
+      .circular-radar .radar-outer-ring { width: 80px; height: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header with logo on left and login/signup on right -->
+  <header class="main-header">
+    <!-- EventRadar logo - The radar animation REPLACES the first 'a' (no letter 'a' visible) -->
+    <div class="logo-area" id="logoClick">
+      <span class="logo-text">Event</span>
+      <span class="logo-text">R</span>
+      <span class="radar-container circular-radar">
+        <span class="radar-inner-glow"></span>
+        <span class="radar-ring"></span>
+        <span class="radar-outer-ring"></span>
+      </span>
+      <span class="logo-text">dar</span>
+    </div>
+    <div class="auth-buttons">
+      <button class="btn-outline" id="loginBtn"><i class="fas fa-key" style="margin-right: 8px;"></i>Log in</button>
+      <button class="btn-solid" id="signupBtn"><i class="fas fa-user-plus" style="margin-right: 8px;"></i>Sign up</button>
+    </div>
+  </header>
+
+  <!-- Main area: search bar in the middle -->
+  <div class="hero-section">
+    <h1 class="hero-title">Discover what's around you</h1>
+    <div class="search-wrapper">
+      <input type="text" class="search-bar" id="globalSearch" placeholder="Search events, artists, teams...">
+      <i class="fas fa-search search-icon"></i>
+    </div>
+    <div id="searchFeedback" class="search-feedback">🟢 EventRADAR — scanning 360° for theater, cinema, sports & concerts</div>
+  </div>
+
+  <!-- Four sections: Theater, Cinema, Sport Contests, Concerts (each own color) -->
+  <div class="categories-grid">
+    <div class="category-card card-theater" data-category="theater">
+      <div class="category-icon"><i class="fas fa-mask"></i></div>
+      <h2>Theater</h2>
+      <p>Dramas, musicals & live performances. Immerse yourself in storytelling.</p>
+      <div class="demo-badge">🎭 upcoming shows</div>
+    </div>
+    <div class="category-card card-cinema" data-category="cinema">
+      <div class="category-icon"><i class="fas fa-film"></i></div>
+      <h2>Cinema</h2>
+      <p>Blockbusters, indie films & movie marathons. Grab your popcorn!</p>
+      <div class="demo-badge">🎬 new releases</div>
+    </div>
+    <div class="category-card card-sports" data-category="sports">
+      <div class="category-icon"><i class="fas fa-futbol"></i></div>
+      <h2>Sport Contests</h2>
+      <p>Football, basketball, tennis & many more... Feel the adrenaline!</p>
+      <div class="demo-badge">🏆 live games</div>
+    </div>
+    <div class="category-card card-concerts" data-category="concerts">
+      <div class="category-icon"><i class="fas fa-guitar"></i></div>
+      <h2>Concerts</h2>
+      <p>Live music, festivals & stadium tours. Hear your favorite artists!</p>
+      <div class="demo-badge">🎸 on tour</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <i class="fas fa-satellite-dish"></i> What did EventRadar found so far? • Tap any category to find out!
+  </div>
+</div>
+
+<!-- MODAL for login/signup with enhanced sign-up fields -->
+<div id="authModal" class="modal-backdrop">
+  <div class="modal-card">
+    <h3 id="modalTitle">Welcome</h3>
+    <div id="modalFields">
+      <!-- Dynamic fields will be inserted here based on mode -->
+    </div>
+    <button id="modalConfirmBtn">Continue</button>
+    <button id="closeModalBtn" class="close-modal">Cancel</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // LOGIN / SIGNUP MODAL with enhanced fields
+    const modalBackdrop = document.getElementById('authModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalFields = document.getElementById('modalFields');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    let currentMode = 'login';
+
+    // Store user data for demo
+    let userData = {
+      username: '',
+      email: '',
+      password: '',
+      city: '',
+      district: '',
+      country: ''
+    };
+
+    function renderLoginFields() {
+      return `
+        <input type="email" id="modalEmail" placeholder="Email address" autocomplete="off">
+        <input type="password" id="modalPassword" placeholder="Password">
+      `;
+    }
+
+    function renderSignupFields() {
+      return `
+        <input type="text" id="modalUsername" placeholder="Username" autocomplete="off">
+        <input type="email" id="modalEmail" placeholder="Email address" autocomplete="off">
+        <input type="password" id="modalPassword" placeholder="Password">
+        <input type="password" id="modalConfirmPassword" placeholder="Confirm Password">
+        <div class="form-row">
+          <input type="text" id="modalCity" placeholder="City" autocomplete="off">
+          <input type="text" id="modalDistrict" placeholder="District" autocomplete="off">
+        </div>
+        <select id="modalCountry">
+          <option value="">Select Country</option>
+          <option value="Turkey">Turkey</option>
+          <option value="USA">United States</option>
+          <option value="UK">United Kingdom</option>
+          <option value="Germany">Germany</option>
+          <option value="France">France</option>
+          <option value="Italy">Italy</option>
+          <option value="Spain">Spain</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Other">Other</option>
+        </select>
+      `;
+    }
+
+    function updateModalForMode(mode) {
+      currentMode = mode;
+      if (mode === 'login') {
+        modalTitle.innerText = '🔐 Log in to EventRadar';
+        modalFields.innerHTML = renderLoginFields();
+        modalConfirmBtn.innerText = 'Log in';
+      } else {
+        modalTitle.innerText = '📡 Create Your Radar Account';
+        modalFields.innerHTML = renderSignupFields();
+        modalConfirmBtn.innerText = 'Sign up';
+      }
+    }
+
+    function openModal(mode) {
+      updateModalForMode(mode);
+      modalBackdrop.classList.add('active');
+    }
+    
+    function closeModal() { 
+      modalBackdrop.classList.remove('active'); 
+    }
+    
+    function handleAuthAction() {
+      if (currentMode === 'login') {
+        const email = document.getElementById('modalEmail')?.value.trim();
+        const password = document.getElementById('modalPassword')?.value.trim();
+        
+        if (!email || !password) {
+          alert('Please enter both email and password.');
+          return;
+        }
+        
+        alert(`✨ Welcome back, ${email}! EventRadar is online — scanning events around you.`);
+        closeModal();
+        
+      } else {
+        // Sign up mode
+        const username = document.getElementById('modalUsername')?.value.trim();
+        const email = document.getElementById('modalEmail')?.value.trim();
+        const password = document.getElementById('modalPassword')?.value;
+        const confirmPassword = document.getElementById('modalConfirmPassword')?.value;
+        const city = document.getElementById('modalCity')?.value.trim();
+        const district = document.getElementById('modalDistrict')?.value.trim();
+        const country = document.getElementById('modalCountry')?.value;
+        
+        // Validation
+        if (!username || !email || !password || !confirmPassword || !city || !district || !country) {
+          alert('Please fill in all fields to create your account.');
+          return;
+        }
+        
+        if (password !== confirmPassword) {
+          alert('Passwords do not match. Please try again.');
+          return;
+        }
+        
+        if (password.length < 6) {
+          alert('Password must be at least 6 characters long.');
+          return;
+        }
+        
+        // Store user data
+        userData = {
+          username: username,
+          email: email,
+          password: password,
+          city: city,
+          district: district,
+          country: country
+        };
+        
+        alert(`🎉 Welcome to EventRadar, ${username}!\n\n📍 Location: ${district}, ${city}, ${country}\n📧 Email: ${email}\n\nYour account has been successfully created! You can now discover events near you.`);
+        closeModal();
+      }
+    }
+    
+    document.getElementById('loginBtn').addEventListener('click', () => openModal('login'));
+    document.getElementById('signupBtn').addEventListener('click', () => openModal('signup'));
+    modalConfirmBtn.addEventListener('click', handleAuthAction);
+    closeModalBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+    
+    // Handle Enter key in modal
+    document.addEventListener('keypress', (e) => {
+      if (modalBackdrop.classList.contains('active') && e.key === 'Enter') {
+        handleAuthAction();
+      }
+    });
+
+    // SEARCH BAR FILTER LOGIC
+    const searchInput = document.getElementById('globalSearch');
+    const searchFeedback = document.getElementById('searchFeedback');
+    const categoryCards = document.querySelectorAll('.category-card');
+    const categoriesMeta = [
+      { element: document.querySelector('[data-category="theater"]'), name: 'theater', keywords: ['theater', 'drama', 'play', 'musical', 'stage', 'theatre'] },
+      { element: document.querySelector('[data-category="cinema"]'), name: 'cinema', keywords: ['cinema', 'movie', 'film', 'blockbuster', 'cinematic', 'movies'] },
+      { element: document.querySelector('[data-category="sports"]'), name: 'sports', keywords: ['sport', 'football', 'basketball', 'match', 'contest', 'sports', 'stadium', 'game'] },
+      { element: document.querySelector('[data-category="concerts"]'), name: 'concerts', keywords: ['concert', 'music', 'live', 'band', 'singer', 'festival', 'tour'] }
+    ];
+
+    function performSearch() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      if (searchTerm === "") {
+        categoryCards.forEach(card => { card.style.display = "block"; card.style.opacity = "1"; });
+        searchFeedback.innerHTML = '🟢 EventRadar scanning all existing events — try "theater", "concert", "movie" or "sport"';
+        return;
+      }
+      let anyMatch = false;
+      categoriesMeta.forEach(meta => {
+        const card = meta.element;
+        const categoryName = meta.name;
+        const keywordMatch = meta.keywords.some(kw => kw.includes(searchTerm) || searchTerm.includes(kw));
+        const titleMatch = categoryName.includes(searchTerm);
+        const isMatch = titleMatch || keywordMatch;
+        if (isMatch) { 
+          card.style.display = "block"; 
+          card.style.opacity = "1"; 
+          anyMatch = true; 
+        } else { 
+          card.style.display = "none"; 
+        }
+      });
+      if (anyMatch) {
+        searchFeedback.innerHTML = `🎯 Radar locked: “${searchTerm}” — tap a category to explore.`;
+      } else {
+        searchFeedback.innerHTML = `⚠️ No category matches “${searchTerm}”. Try Theater, Cinema, Sport Contests or Concerts.`;
+      }
+    }
+    
+    searchInput.addEventListener('input', performSearch);
+    performSearch();
+
+    // Category card click alerts
+    categoryCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const titleElem = card.querySelector('h2');
+        let category = titleElem ? titleElem.innerText : 'Event';
+        let specialMsg = '';
+        if (card.classList.contains('card-theater')) specialMsg = '🎭 Discover amazing plays, drama festivals and Broadway-style shows.';
+        else if (card.classList.contains('card-cinema')) specialMsg = '🎬 Explore new movie releases, film festivals and cinema marathons.';
+        else if (card.classList.contains('card-sports')) specialMsg = '⚽ Live sports contests, championship tickets and fan zone experiences.';
+        else if (card.classList.contains('card-concerts')) specialMsg = '🎤 Upcoming concerts, arena tours and exclusive music events.';
+        alert(`✨ ${category} — ${specialMsg}\n\nEventRadar keeps you updated!`);
+      });
+    });
+
+    // Logo click easter egg
+    const logo = document.getElementById('logoClick');
+    logo.addEventListener('click', () => {
+      alert('🟢 EventRadar · The radar animation REPLACES the letter "a"! Scanning 360° for events!');
+    });
+  })();
+</script>
+</body>
+</html>
