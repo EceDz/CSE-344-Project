@@ -4,6 +4,13 @@ Bu klasor EventRadar projesinin backend servisidir. Veriler SQLite database dosy
 
 ```text
 eventradar.sqlite3
+@‌cse
+Language:
+PHP
+Spring Boot Java
+JavaScript
+
+All remaining functions (recording the data, leading the pages, etc.) will be created or modified in Backend.
 ```
 
 ## Calistirma
